@@ -1,13 +1,8 @@
 {
   "required": true,
-  "minVersion": "0.8",
-  "package": "tianyi.gameplay_sculptor.mixin",
-  "compatibilityLevel": "JAVA_8",
-  "refmap": "gameplay_sculptor.refmap.json",
-  "mixins": [
-  ],
-  "client": [
-  ],
+  "package": "com.tianyi.gameplay_sculptor.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [],
   "injectors": {
     "defaultRequire": 1
   },
