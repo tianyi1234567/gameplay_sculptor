@@ -1,0 +1,21 @@
+modLoader = "javafml" #mandatory
+loaderVersion = "[47,)"
+license = "GNU GPL 3.0"
+[[mods]] #mandatory
+modId = "gameplay_sculptor" #mandatory
+version = "1.0" #mandatory
+displayName = "Attribute Sculptor" #mandatory
+authors = "tianyi" #optional
+description = ''''''
+[[dependencies."gameplay_sculptor"]] #optional
+modId = "forge" #mandatory
+mandatory = true #mandatory
+versionRange = "[47,)" #mandatory
+ordering = "NONE"
+side = "BOTH"# Here's another dependency
+[[dependencies."gameplay_sculptor"]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.21)"
+ordering = "NONE"
+side = "BOTH"

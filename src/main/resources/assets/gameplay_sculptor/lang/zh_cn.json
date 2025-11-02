@@ -1,0 +1,4 @@
+{
+  "config.gameplay_sculptor.health.title": "玩家基础生命值设置",
+  "config.gameplay_sculptor.additional_health.tooltip": "给玩家增加的生命值（每1点代表半颗心）"
+}

@@ -1,0 +1,4 @@
+{
+  "config.gameplay_sculptor.health.title": "Health Settings",
+  "config.gameplay_sculptor.additional_health.tooltip": "Additional health to give players (in half-hearts)"
+}

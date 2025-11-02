@@ -1,0 +1,22 @@
+
+#Health Modifier Mod Configuration·玩家基础属性修改配置
+["attribute·玩家属性"]
+	#Additional health to give players (in half-hearts)·每1点会为玩家提供半颗心
+	#Range: 0.0 ~ 1000000.0
+	"additionalHealth·玩家基础生命值调整" = 0.0
+	#Additional attack damage to give players·玩家基础攻击力调整
+	#Range: 0.0 ~ 100000.0
+	"additionalAttack·玩家基础攻击力调整" = 0.0
+	#Additional armor to give players·玩家基础防御力调整
+	#Range: 0.0 ~ 100000.0
+	"additionalArmor·玩家基础防御力调整" = 0.0
+
+#Entity Health Settings·生物属性修改配置
+["entity_health·生物属性"]
+	#Entity health settings in format: entity_id,health_value·生物最大生命值调整
+	"entityHealthSettings·生物最大生命值调整（使用方法：ID+,+具体数值）" = ["minecraft:zombie,20.0", "minecraft:zombie_villager,100.0"]
+	#Entity attack damage settings in format: entity_id,attack_damage_value·生物攻击力调整
+	"entityAttackDamageSettings·生物攻击力调整（使用方法：ID+,+具体数值）" = ["minecraft:zombie,1.0", "minecraft:zombie_villager,1.0", "born_in_chaos_v1:decaying_zombie,10.0"]
+	#Entity armor settings in format: entity_id,armor_value·生物防御力调整
+	"entityArmorSettings·生物防御力调整（使用方法：ID+,+具体数值）" = ["minecraft:zombie,10.0", "minecraft:zombie_villager,1.0", "born_in_chaos_v1:decaying_zombie,200.0"]
+
