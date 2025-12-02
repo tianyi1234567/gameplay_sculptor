@@ -20,3 +20,11 @@
 	#Entity armor settings in format: entity_id,armor_value·生物防御力调整
 	"entityArmorSettings·生物防御力调整（使用方法：ID+,+具体数值）" = ["minecraft:zombie,10.0", "minecraft:zombie_villager,1.0", "born_in_chaos_v1:decaying_zombie,200.0"]
 
+#Player Count Multiplier Settings·根据玩家数量调整属性
+["player_count_multiplier·玩家数量倍数"]
+	#Enable multiplier based on player count·是否根据玩家数量调整属性倍数
+	"enablePlayerCountMultiplier·启用玩家数量倍数" = true
+	#Percentage increase per additional player (0-100)·每多一个玩家增加的属性百分比（0-100）
+	#Range: 0.0 ~ 1000.0
+	"playerCountMultiplierPercent·每个玩家增长百分比" = 50.0
+

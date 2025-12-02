@@ -3,7 +3,7 @@ loaderVersion = "[47,)"
 license = "GNU GPL 3.0"
 [[mods]] #mandatory
 modId = "gameplay_sculptor" #mandatory
-version = "1.0" #mandatory
+version = "1.1" #mandatory
 displayName = "Attribute Sculptor" #mandatory
 authors = "tianyi" #optional
 description = ''''''

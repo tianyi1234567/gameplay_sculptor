@@ -56,6 +56,25 @@ public class Gameplay_sculptor {
     private final Map<String, Double> entityHealthMap = new HashMap<>();
     private final Map<String, Double> entityAttackDamageMap = new HashMap<>();
     private final Map<String, Double> entityArmorMap = new HashMap<>();
+    // 存储玩家数量倍数
+    private double playerCountMultiplier = 1.0;
+    /**
+     * 计算当前玩家数量倍数
+     * 公式：基础倍数(100%) + 每个玩家增长百分比 × (玩家数 - 1)
+     */
+    private double calculatePlayerCountMultiplier(MinecraftServer server) {
+        if (!Config.COMMON.enablePlayerCountMultiplier.get() || server == null) {
+            return 1.0;
+        }
+
+        int playerCount = server.getPlayerList().getPlayers().size();
+        double multiplierPercent = Config.COMMON.playerCountMultiplierPercent.get();
+        
+        // 公式：倍数 = 1.0 + (百分比 / 100) × (玩家数 - 1)
+        // 例如：3个玩家，50%增长 = 1.0 + 0.5 × (3 - 1) = 2.0（200%）
+        double multiplier = 1.0 + (multiplierPercent / 100.0) * (playerCount - 1);
+        return Math.max(1.0, multiplier);
+    }
 
     public Gameplay_sculptor() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -76,8 +95,13 @@ public class Gameplay_sculptor {
             // 重新加载实体属性配置
             loadEntityConfig();
 
-            // 重新应用所有在线玩家的生命值修改
+            // 更新玩家数量倍数
             MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            if (server != null) {
+                playerCountMultiplier = calculatePlayerCountMultiplier(server);
+            }
+
+            // 重新应用所有在线玩家的生命值修改
             if (server != null) {
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                     applyAttributeModifiers(player);
@@ -102,6 +126,16 @@ public class Gameplay_sculptor {
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         // 玩家登录时应用修改
         applyAttributeModifiers(event.getEntity());
+        
+        // 更新玩家数量倍数并重新应用所有实体修改
+        MinecraftServer server = event.getEntity().getServer();
+        if (server != null) {
+            playerCountMultiplier = calculatePlayerCountMultiplier(server);
+            // 重新应用所有实体的属性修改
+            for (var player : server.getPlayerList().getPlayers()) {
+                applyAttributeModifiers(player);
+            }
+        }
     }
 
     //加载实体属性配置，这个映射必不可少！
@@ -114,6 +148,8 @@ public class Gameplay_sculptor {
         EntityEvent.setEntityHealthMap(entityHealthMap);
         EntityEvent.setEntityAttackDamageMap(entityAttackDamageMap);
         EntityEvent.setEntityArmorMap(entityArmorMap);
+        // 传递玩家数量倍数计算器
+        EntityEvent.setPlayerCountMultiplierCalculator(this::calculatePlayerCountMultiplier);
 
         LOGGER.info("Loaded entity configs: {} health, {} attack, {} armor settings",
                    entityHealthMap.size(), entityAttackDamageMap.size(), entityArmorMap.size());
@@ -243,6 +279,13 @@ public class Gameplay_sculptor {
         );
 
         attributeInstance.addPermanentModifier(attackDamageModifier);
+    }
+
+    /**
+     * 获取当前的玩家数量倍数
+     */
+    public double getPlayerCountMultiplier() {
+        return playerCountMultiplier;
     }
 
     private void applyArmorModifier(Player player) {

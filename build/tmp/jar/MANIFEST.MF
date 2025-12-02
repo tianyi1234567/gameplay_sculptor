@@ -3,8 +3,8 @@ Specification-Title: gameplay_sculptor
 Specification-Vendor: tianyi
 Specification-Version: 1
 Implementation-Title: gameplay-sculptor
-Implementation-Version: 1.0
+Implementation-Version: 1.1
 Implementation-Vendor: tianyi
-Implementation-Timestamp: 2025-10-25T17:37:26+0800
+Implementation-Timestamp: 2025-12-02T23:19:17+0800
 MixinConfigs: gameplay_sculptor.mixins.json
 

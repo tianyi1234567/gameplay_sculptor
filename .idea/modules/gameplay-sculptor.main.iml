@@ -18,7 +18,7 @@
     </facet>
   </component>
   <component name="McpModuleSettings">
-    <option name="mappingFile" value="E:\yuanchu\Gameplay Sculptor\build\createMcpToSrg\output.tsrg" />
+    <option name="mappingFile" value="E:\yuanchu\Gameplay Sculptor\gameplay_sculptor\build\createMcpToSrg\output.tsrg" />
     <option name="mcpVersion" value="official_1.20.1" />
     <option name="minecraftVersion" value="1.20.1" />
     <option name="platformVersion" value="47.4.10" />

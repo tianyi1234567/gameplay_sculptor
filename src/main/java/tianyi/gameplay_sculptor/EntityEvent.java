@@ -10,6 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.resources.ResourceLocation;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
 public class EntityEvent {
     // 实体生命值修改器UUID
@@ -23,6 +24,8 @@ public class EntityEvent {
     private static Map<String, Double> entityHealthMap;
     private static Map<String, Double> entityAttackDamageMap;
     private static Map<String, Double> entityArmorMap;
+    // 玩家数量倍数计算器
+    private static Function<net.minecraft.server.MinecraftServer, Double> playerCountMultiplierCalculator;
 
     public static void setEntityHealthMap(Map<String, Double> map) {
         entityHealthMap = map;
@@ -36,6 +39,20 @@ public class EntityEvent {
         entityArmorMap = map;
     }
 
+    public static void setPlayerCountMultiplierCalculator(Function<net.minecraft.server.MinecraftServer, Double> calculator) {
+        playerCountMultiplierCalculator = calculator;
+    }
+
+    /**
+     * 获取玩家数量倍数
+     */
+    private double getPlayerCountMultiplier(LivingEntity entity) {
+        if (playerCountMultiplierCalculator == null || entity.level().getServer() == null) {
+            return 1.0;
+        }
+        return playerCountMultiplierCalculator.apply(entity.level().getServer());
+    }
+
     @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinLevelEvent event) {
         // 只在服务端处理
@@ -43,7 +60,7 @@ public class EntityEvent {
 
         // 检查是否是生物实体
         if (event.getEntity() instanceof LivingEntity livingEntity) {
-            // 延迟1 tick执行，确保实体完全初始化
+            // 延迟1 tick执行，确保实体完全初始化（最核心的一点）
             event.getLevel().getServer().tell(new TickTask(1, () -> {
                 applyEntityHealthModifier(livingEntity);
                 applyEntityAttackDamageModifier(livingEntity);
@@ -62,9 +79,12 @@ public class EntityEvent {
 
         String entityId = entityKey.toString();
 
-        // 检查是否有针对此实体的配置
+        // 检查是否有针对此实体的配置（正常来说只要没有其他模组在1ick后再设置就没问题）
         if (entityHealthMap != null && entityHealthMap.containsKey(entityId)) {
             double newMaxHealth = entityHealthMap.get(entityId);
+            // 应用玩家数量倍数
+            double playerCountMultiplier = getPlayerCountMultiplier(entity);
+            double finalHealth = newMaxHealth * playerCountMultiplier;
 
             // 获取生命值属性实例
             var attributeInstance = entity.getAttribute(Attributes.MAX_HEALTH);
@@ -78,7 +98,7 @@ public class EntityEvent {
                 AttributeModifier healthModifier = new AttributeModifier(
                         ENTITY_HEALTH_MODIFIER_UUID,
                         "Custom Entity Health Boost",
-                        newMaxHealth - attributeInstance.getBaseValue(), // 计算差值
+                        finalHealth - attributeInstance.getBaseValue(), // 计算差值
                         AttributeModifier.Operation.ADDITION
                 );
 
@@ -103,6 +123,9 @@ public class EntityEvent {
         // 检查是否有针对此实体的配置
         if (entityAttackDamageMap != null && entityAttackDamageMap.containsKey(entityId)) {
             double newAttackDamage = entityAttackDamageMap.get(entityId);
+            // 应用玩家数量倍数
+            double playerCountMultiplier = getPlayerCountMultiplier(entity);
+            double finalAttackDamage = newAttackDamage * playerCountMultiplier;
 
             // 获取攻击力属性实例
             var attributeInstance = entity.getAttribute(Attributes.ATTACK_DAMAGE);
@@ -116,7 +139,7 @@ public class EntityEvent {
                 AttributeModifier attackDamageModifier = new AttributeModifier(
                         ENTITY_ATTACK_DAMAGE_MODIFIER_UUID,
                         "Custom Entity Attack Damage Boost",
-                        newAttackDamage - attributeInstance.getBaseValue(), // 计算差值
+                        finalAttackDamage - attributeInstance.getBaseValue(), // 计算差值
                         AttributeModifier.Operation.ADDITION
                 );
 
@@ -138,6 +161,9 @@ public class EntityEvent {
         // 检查是否有针对此实体的配置
         if (entityArmorMap != null && entityArmorMap.containsKey(entityId)) {
             double newArmor = entityArmorMap.get(entityId);
+            // 应用玩家数量倍数
+            double playerCountMultiplier = getPlayerCountMultiplier(entity);
+            double finalArmor = newArmor * playerCountMultiplier;
 
             // 获取防御力属性实例
             var attributeInstance = entity.getAttribute(Attributes.ARMOR);
@@ -151,7 +177,7 @@ public class EntityEvent {
                 AttributeModifier armorModifier = new AttributeModifier(
                         ENTITY_ARMOR_MODIFIER_UUID,
                         "Custom Entity Armor Boost",
-                        newArmor - attributeInstance.getBaseValue(), // 计算差值
+                        finalArmor - attributeInstance.getBaseValue(), // 计算差值
                         AttributeModifier.Operation.ADDITION
                 );
 

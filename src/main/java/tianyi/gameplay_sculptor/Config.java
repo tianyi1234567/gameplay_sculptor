@@ -21,6 +21,10 @@ public class Config {
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> entityAttackDamageSettings;
         // 生物防御力配置
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> entityArmorSettings;
+        // 是否启用玩家数量倍数
+        public final ForgeConfigSpec.BooleanValue enablePlayerCountMultiplier;
+        // 每个玩家增加的属性百分比
+        public final ForgeConfigSpec.DoubleValue playerCountMultiplierPercent;
 
 
         Common(ForgeConfigSpec.Builder builder) {
@@ -59,6 +63,16 @@ public class Config {
                     .defineListAllowEmpty("entityArmorSettings·生物防御力调整（使用方法：ID+,+具体数值）",
                             Lists.newArrayList("minecraft:zombie,0.0", "minecraft:zombie_villager,0.0"),
                             obj -> obj instanceof String && ((String) obj).contains(","));
+            builder.pop();
+
+            builder.comment("Player Count Multiplier Settings·根据玩家数量调整属性").push("player_count_multiplier·玩家数量倍数");
+            enablePlayerCountMultiplier = builder
+                    .comment("Enable multiplier based on player count·是否根据玩家数量调整属性倍数")
+                    .define("enablePlayerCountMultiplier·启用玩家数量倍数", true);
+
+            playerCountMultiplierPercent = builder
+                    .comment("Percentage increase per additional player (0-100)·每多一个玩家增加的属性百分比（0-100）")
+                    .defineInRange("playerCountMultiplierPercent·每个玩家增长百分比", 50.0D, 0.0D, 1000.0D);
             builder.pop();
         }
     }
